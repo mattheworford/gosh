@@ -18,6 +18,8 @@ func main() {
 
 		if strings.ToLower(input) == "exit" {
 			os.Exit(0)
+		} else if input == "" {
+			continue
 		}
 
 		cmd := exec.Command(input)
