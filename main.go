@@ -22,7 +22,11 @@ func main() {
 			continue
 		}
 
-		cmd := exec.Command(input)
+		parts := strings.Fields(input)
+		var command = parts[0]
+		var args = parts[1:]
+
+		cmd := exec.Command(command, args...)
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 
