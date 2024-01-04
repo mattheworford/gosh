@@ -16,23 +16,36 @@ func main() {
 		input, _ := reader.ReadString('\n')
 		input = strings.TrimSpace(input)
 
-		if strings.ToLower(input) == "exit" {
-			os.Exit(0)
-		} else if input == "" {
-			continue
-		}
-
 		parts := strings.Fields(input)
 		var command = parts[0]
 		var args = parts[1:]
 
-		cmd := exec.Command(command, args...)
-		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stderr
+		switch command {
+		case "":
+			continue
+		case "exit":
+			os.Exit(0)
+		case "cd":
+			var path string
+			if len(args) > 0 {
+				path = args[0]
+			} else {
+				path, _ = os.UserHomeDir()
+			}
 
-		err := cmd.Run()
-		if err != nil {
-			fmt.Println(err)
+			var err = os.Chdir(path)
+			if err != nil {
+				fmt.Println(strings.Replace(err.Error(), "chdir", "cd", -1))
+			}
+		default:
+			cmd := exec.Command(command, args...)
+			cmd.Stdout = os.Stdout
+			cmd.Stderr = os.Stderr
+
+			err := cmd.Run()
+			if err != nil {
+				fmt.Println(err)
+			}
 		}
 	}
 }
