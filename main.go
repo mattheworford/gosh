@@ -6,15 +6,22 @@ import (
 	"io"
 	"os"
 	"os/exec"
+	"os/signal"
 	"strings"
 )
 
 func main() {
+	signal.Ignore(os.Interrupt)
+
 	for {
 		fmt.Print("gosh> ")
 
 		reader := bufio.NewReader(os.Stdin)
 		input, _ := reader.ReadString('\n')
+		input = strings.TrimSpace(input)
+		if input == "" {
+			continue
+		}
 		commands := strings.Split(input, "|")
 
 		var cmds []*exec.Cmd
