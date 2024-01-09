@@ -13,6 +13,8 @@ import (
 func main() {
 	signal.Ignore(os.Interrupt)
 
+	history := InitHistory()
+
 	for {
 		fmt.Print("gosh> ")
 
@@ -27,16 +29,17 @@ func main() {
 		var cmds []*exec.Cmd
 		var output io.ReadCloser
 
-		for _, command := range commands {
-			command = strings.TrimSpace(command)
-			parts := strings.Fields(command)
-			var command = parts[0]
+		for _, commandLine := range commands {
+			commandLine = strings.TrimSpace(commandLine)
+			parts := strings.Fields(commandLine)
+			command := parts[0]
 			var args = parts[1:]
 
 			switch command {
 			case "":
 				continue
 			case "exit":
+				_ = history.file.Close()
 				os.Exit(0)
 			case "cd":
 				cd(args)
@@ -51,6 +54,10 @@ func main() {
 					}
 				} else {
 					output = pipeReader
+				}
+			case "history":
+				for i, hc := range history.commands {
+					fmt.Printf("%d: %s\n", i, hc)
 				}
 			default:
 				cmd := exec.Command(command, args...)
@@ -68,6 +75,7 @@ func main() {
 					return
 				}
 			}
+			history.Append(commandLine)
 		}
 		if len(cmds) > 0 {
 			cmds[len(cmds)-1].Stdout = os.Stdout
