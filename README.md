@@ -1,5 +1,7 @@
 # GoSh
 
+[![LICENSE](https://img.shields.io/github/license/mattheworford/gosh.svg?style=flat-square)](https://github.com/mattheworford/gosh/LICENSE)
+
 GoSh is a basic shell implementation in Go, providing a simple command-line interface for interacting with your operating system.
 
 ## Getting Started
